@@ -1,73 +1,105 @@
-# React + TypeScript + Vite
+# 🍳 Recipe App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack recipe management app built with React and Cloudflare Workers.
 
-Currently, two official plugins are available:
+## 🌐 Live Demo
+**https://recipe-app-b42.pages.dev/**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
+- Browse and search your saved recipes
+- Search millions of recipes via Spoonacular API and import them with one click
+- Add your own recipes manually with ingredients and step-by-step instructions
+- Shopping list — add ingredients from any recipe and check them off while shopping
+- Fully responsive design for mobile, tablet and desktop
 
-## React Compiler
+## 🛠 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React, TypeScript, Tailwind CSS, Framer Motion, React Router |
+| Backend | Cloudflare Workers, Hono |
+| Database | Cloudflare D1 (SQLite) |
+| External API | Spoonacular Food API |
+| Deployment | Cloudflare Pages + Workers |
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
+- Node.js 18+
+- Cloudflare account
+- Spoonacular API key (free at [spoonacular.com/food-api](https://spoonacular.com/food-api))
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Installation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/ihorpushkar/recipe-app.git
+   cd recipe-app
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. **Install frontend dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Install worker dependencies**
+   ```bash
+   cd worker && npm install
+   ```
+
+4. **Add Spoonacular API key to `worker/wrangler.toml`**
+   ```toml
+   [vars]
+   SPOONACULAR_API_KEY = "your-api-key-here"
+   ```
+
+5. **Initialize local D1 database**
+   ```bash
+   npx wrangler d1 execute recipes_db --local --file=schema.sql
+   ```
+
+6. **Run the app**
+
+   Frontend (in root folder):
+   ```bash
+   npm run dev
+   ```
+
+   Worker (in worker folder):
+   ```bash
+   npx wrangler dev
+   ```
+
+7. Open **http://localhost:5173**
+
+## 📦 Deployment
+
+### Deploy Worker
+```bash
+cd worker
+npx wrangler deploy
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Deploy Frontend
+```bash
+npm run build
+npx wrangler pages deploy dist --project-name=recipe-app
+```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📁 Project Structure
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+recipe-app/
+├── src/                  # React frontend
+│   ├── api/              # API call functions
+│   ├── components/       # Reusable UI components
+│   ├── hooks/            # Custom React hooks
+│   ├── pages/            # Page components
+│   └── types/            # TypeScript interfaces
+└── worker/               # Cloudflare Worker backend
+    ├── src/
+    │   ├── routes/       # API routes
+    │   └── db/           # Database schema
+    ├── schema.sql        # D1 database schema
+    └── wrangler.toml     # Cloudflare configuration
 ```
